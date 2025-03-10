@@ -1,11 +1,18 @@
+// Andrii Malakhovtsev
+// MidTerm Project - Cave Diver
+
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The main class that runs the "Cave Diver" game.
+ * It initializes the GUI, handles user input, and controls the flow of the game.
+ */
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Create the main frame
-            JFrame frame = new JFrame("Underwater Cave Escape");
+            JFrame frame = new JFrame("Cave Diver - Find an Escape Route");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             // Create the cave and its panel
@@ -53,7 +60,8 @@ public class Main {
                 boolean foundEscape = cave.escape(depthRating, 20); // Try to find an escape route
 
                 if (!foundEscape) {
-                    JOptionPane.showMessageDialog(frame, "No escape route found!", "Escape Failure", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "No escape route found!",
+                            "Escape Failure", JOptionPane.ERROR_MESSAGE);
                 }
 
                 // Repaint the cave grid to show the updated path

@@ -1,54 +1,70 @@
+// Andrii Malakhovtsev
+// MidTerm Project - Cave Diver
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * The JPanel that displays the cave grid.
+ * A custom JPanel used to render and display the cave grid.
+ * Responsible for drawing the cave and its escape route.
  */
 public class CavePanel extends JPanel {
-    private final int CELL_LENGTH = 50;
-    private Cave cave; // The cave to be displayed
-    private Color escapePathColor = new Color(242, 0, 0);
+    private final Cave cave;
 
+    /**
+     * Constructor that initializes the cave and sets the preferred size for the panel.
+     *
+     * @param cave The Cave object to display.
+     */
     public CavePanel(Cave cave) {
         this.cave = cave;
+        setPreferredSize(new Dimension(500, 500)); // Size of the panel to render the cave grid
     }
 
     /**
-     * Paints the cave grid onto the panel.
+     * Paints the cave grid and escape route on the panel.
+     * This method is called whenever the panel needs to be re-drawn.
+     *
+     * @param g graphics object used to draw the cave grid.
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Get the width and height of the panel
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
+        // Get the cave grid
+        CaveCell[][] caveGrid = cave.getCaveGrid();
+        int cellSize = 50; // Size of each cell
 
-        // Get the dimensions of the cave grid
-        int caveWidth = cave.getCaveGrid()[0].length * CELL_LENGTH;
-        int caveHeight = cave.getCaveGrid().length * CELL_LENGTH;
+        // Calculate the grid's starting offset to center it in the panel
+        int offsetX = (getWidth() - caveGrid[0].length * cellSize) / 2;
+        int offsetY = (getHeight() - caveGrid.length * cellSize) / 2;
 
-        // Calculate the offsets to center the grid
-        int xOffset = (panelWidth - caveWidth) / 2;
-        int yOffset = (panelHeight - caveHeight) / 2;
+        // Iterate through each cell and draw it
+        for (int i = 0; i < caveGrid.length; i++) {
+            for (int j = 0; j < caveGrid[i].length; j++) {
+                // Set the color based on the depth of the cell
+                g.setColor(caveGrid[i][j].getColor());
 
-        // Loop through the cave grid to draw the cells
-        for (int i = 0; i < cave.getCaveGrid().length; i++) {
-            for (int j = 0; j < cave.getCaveGrid()[i].length; j++) {
-                CaveCell cell = cave.getCaveGrid()[i][j];
-                g.setColor(cell.getColor());  // Use the color of each cell
-                g.fillRect(j * CELL_LENGTH + xOffset, i * CELL_LENGTH + yOffset, CELL_LENGTH, CELL_LENGTH);  // Draw the cell
+                // Draw the cell
+                g.fillRect(offsetX + j * cellSize, offsetY + i * cellSize, cellSize, cellSize);
 
-                // Draw the escape route in red if part of the path
-                if (cell.isPartOfEscapeRoute()) {
-                    g.setColor(escapePathColor);  // Red color for escape path
-                    g.fillRect(j * CELL_LENGTH + xOffset, i * CELL_LENGTH + yOffset, CELL_LENGTH, CELL_LENGTH);
+                // Draw the escape route on top of the cell if it's part of the escape route
+                if (caveGrid[i][j].isPartOfEscapeRoute()) {
+                    g.setColor(Color.RED); // Escape route cells are highlighted in red
+                    g.fillRect(offsetX + j * cellSize, offsetY + i * cellSize, cellSize, cellSize);
                 }
 
-                // Draw the depth number on top of the cell
-                g.setColor(Color.WHITE);
-                String depthText = Integer.toString(cell.getDepth());
-                g.drawString(depthText, j * CELL_LENGTH + xOffset + 15, i * CELL_LENGTH + yOffset + 25); // Adjust position for text
+                // Draw the cell borders
+                g.setColor(Color.BLACK);
+                g.drawRect(offsetX + j * cellSize, offsetY + i * cellSize, cellSize, cellSize);
+
+                // Draw the depth of each cell, centered inside the cell
+                String depthText = String.valueOf(caveGrid[i][j].getDepth()); // Get the depth of the cell
+                g.setColor(Color.WHITE); // White text color
+                FontMetrics metrics = g.getFontMetrics();
+                int textX = offsetX + j * cellSize + (cellSize - metrics.stringWidth(depthText)) / 2;
+                int textY = offsetY + i * cellSize + (cellSize + metrics.getHeight()) / 2 - 3;
+                g.drawString(depthText, textX, textY);
             }
         }
     }
