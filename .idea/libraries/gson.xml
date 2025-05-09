@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="fitbur.testify.junit.core" type="repository">
+  <library name="gson" type="repository">
     <properties maven-id="com.fitbur.testify.junit:junit-core:0.0.7" />
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/Project 1/libs/junit-core-0.0.7.jar!/" />
